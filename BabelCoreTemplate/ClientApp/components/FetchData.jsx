@@ -4,26 +4,20 @@ import { connect } from 'react-redux';
 import { ApplicationState }  from '../store';
 import * as WeatherForecastsState from '../store/WeatherForecasts';
 
-// At runtime, Redux will merge together...
-type WeatherForecastProps =
-    WeatherForecastsState.WeatherForecastsState        // ... state we've requested from the Redux store
-    & typeof WeatherForecastsState.actionCreators      // ... plus action creators we've requested
-    & RouteComponentProps<{ startDateIndex: string }>; // ... plus incoming routing parameters
-
-class FetchData extends React.Component<WeatherForecastProps, {}> {
+class FetchData extends React.Component {
     componentWillMount() {
         // This method runs when the component is first added to the page
         let startDateIndex = parseInt(this.props.match.params.startDateIndex) || 0;
         this.props.requestWeatherForecasts(startDateIndex);
     }
 
-    componentWillReceiveProps(nextProps: WeatherForecastProps) {
+    componentWillReceiveProps(nextProps) {
         // This method runs when incoming props (e.g., route params) change
         let startDateIndex = parseInt(nextProps.match.params.startDateIndex) || 0;
         this.props.requestWeatherForecasts(startDateIndex);
     }
 
-    public render() {
+    render() {
         return <div>
             <h1>Weather forecast</h1>
             <p>This component demonstrates fetching data from the server and working with URL parameters.</p>
@@ -32,7 +26,7 @@ class FetchData extends React.Component<WeatherForecastProps, {}> {
         </div>;
     }
 
-    private renderForecastsTable() {
+    renderForecastsTable() {
         return <table className='table'>
             <thead>
                 <tr>
@@ -55,7 +49,7 @@ class FetchData extends React.Component<WeatherForecastProps, {}> {
         </table>;
     }
 
-    private renderPagination() {
+    renderPagination() {
         let prevStartDateIndex = (this.props.startDateIndex || 0) - 5;
         let nextStartDateIndex = (this.props.startDateIndex || 0) + 5;
 
@@ -68,6 +62,6 @@ class FetchData extends React.Component<WeatherForecastProps, {}> {
 }
 
 export default connect(
-    (state: ApplicationState) => state.weatherForecasts, // Selects which state properties are merged into the component's props
+    (state) => state.weatherForecasts, // Selects which state properties are merged into the component's props
     WeatherForecastsState.actionCreators                 // Selects which action creators are merged into the component's props
-)(FetchData) as typeof FetchData;
+)(FetchData);
